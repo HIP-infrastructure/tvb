@@ -11,10 +11,10 @@ ARG APP_VERSION
 
 LABEL app_version=$APP_VERSION
 
-# a lot of stuff depends on this path, so symlink it in place
-RUN mkdir -p /apps/tvb-hip && ln -s /apps/tvb-hip /apps/${APP_NAME}
-
 WORKDIR /apps/${APP_NAME}
+
+# a lot of stuff depends on this path, so symlink it in place
+RUN mkdir -p /apps/tvb-hip && ln -s /apps/${APP_NAME} /apps/tvb-hip
 
 # token required to pull from data proxy, but doesn't persist in image
 ARG EBRAINS_TOKEN
@@ -36,7 +36,7 @@ RUN python3 hip-tvb-app-$APP_VERSION/sync_image.py \
 
 ENV APP_SHELL="no"
 ENV APP_CMD="/apps/tvb-hip/start.sh"
-ENV PROCESS_NAME="electron"
+ENV PROCESS_NAME="node"
 ENV DIR_ARRAY=".jupyter"
 
 HEALTHCHECK --interval=10s --timeout=10s --retries=5 --start-period=30s \
@@ -46,4 +46,4 @@ HEALTHCHECK --interval=10s --timeout=10s --retries=5 --start-period=30s \
 COPY ./scripts/ scripts/
 
 # uncomment for deployment, I can't test this locally myself
-# ENTRYPOINT ["./scripts/docker-entrypoint.sh"]
+ENTRYPOINT ["./scripts/docker-entrypoint.sh"]
