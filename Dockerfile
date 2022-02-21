@@ -34,9 +34,14 @@ RUN python3 hip-tvb-app-$APP_VERSION/sync_image.py \
     # apt-get clean && \
     # rm -rf /var/lib/apt/lists/*
 
+ADD better-start.sh /apps/tvb-hip/start2.sh
+
+# TODO install from source, avoid numpy abi incompat
+RUN PATH=/apps/tvb-hip/jlab_server/bin:$PATH pip uninstall -y tvb-gdist
+
 ENV APP_SHELL="no"
-ENV APP_CMD="/apps/tvb-hip/start.sh"
-ENV PROCESS_NAME="node"
+ENV APP_CMD="/apps/tvb-hip/start2.sh"
+ENV PROCESS_NAME="electron"
 ENV DIR_ARRAY=".jupyter"
 
 HEALTHCHECK --interval=10s --timeout=10s --retries=5 --start-period=30s \

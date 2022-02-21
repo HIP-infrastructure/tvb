@@ -18,3 +18,5 @@ docker build -t hip-deploy \
 	--build-arg APP_VERSION=0.4 \
 	--build-arg EBRAINS_TOKEN=$EBRAINS_TOKEN \
 	.
+
+docker build -t hip-test -f test.dockerfile .
