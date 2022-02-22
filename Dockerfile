@@ -34,7 +34,9 @@ RUN python3 hip-tvb-app-$APP_VERSION/sync_image.py \
     # apt-get clean && \
     # rm -rf /var/lib/apt/lists/*
 
-ADD better-start.sh /apps/tvb-hip/start2.sh
+# needed because we have a different context
+ADD ./apps/${APP_NAME}/better-start.sh /apps/tvb-hip/start2.sh
+#ADD better-start.sh /apps/tvb-hip/start2.sh
 
 # TODO install from source, avoid numpy abi incompat
 RUN PATH=/apps/tvb-hip/jlab_server/bin:$PATH pip uninstall -y tvb-gdist
