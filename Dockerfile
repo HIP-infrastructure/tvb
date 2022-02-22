@@ -39,6 +39,12 @@ ADD better-start.sh /apps/tvb-hip/start2.sh
 # TODO install from source, avoid numpy abi incompat
 RUN PATH=/apps/tvb-hip/jlab_server/bin:$PATH pip uninstall -y tvb-gdist
 
+# ensure bash is used, and our our kernelspec with $HOME env vars set
+RUN mkdir /etc/jupyter \
+ && echo "c.ServerApp.terminado_settings = { 'shell_command': ['/usr/bin/bash'] }" > /etc/jupyter/jupyter_lab_config.py \
+ && echo "c.KernelSpecManager.whitelist = { 'tvb' }" >> /etc/jupyter/jupyter_lab_config.py \
+ && echo "c.KernelSpecManager.ensure_native_kernel = False" >> /etc/jupyter/jupyter_lab_config.py
+
 ENV APP_SHELL="no"
 ENV APP_CMD="/apps/tvb-hip/start2.sh"
 ENV PROCESS_NAME="electron"
