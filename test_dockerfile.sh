@@ -15,7 +15,7 @@ docker build -t hip-deploy \
 	--build-arg CARD=foo \
 	--build-arg CI_REGISTRY=bar \
 	--build-arg APP_NAME=tvb \
-	--build-arg APP_VERSION=0.4 \
+	--build-arg APP_VERSION=0.6 \
 	--build-arg EBRAINS_TOKEN=$EBRAINS_TOKEN \
 	.
 

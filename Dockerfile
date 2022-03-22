@@ -26,7 +26,7 @@ RUN curl -k -L https://github.com/ins-amu/hip-tvb-app/archive/refs/tags/v$APP_VE
  && ./hip-tvb-app-$APP_VERSION/install-packages.sh
 
 RUN python3 hip-tvb-app-$APP_VERSION/sync_image.py \
- && tar -C / -xzf /apps/${APP_NAME}/app.tar.* && rm /apps/${APP_NAME}/app.tar.*
+ && tar -C / -xzf /apps/${APP_NAME}/tvb-hip-app.tar.* && rm /apps/${APP_NAME}/tvb-hip-app.tar.*
 
 # we could clean up but image is already enormous
     # apt-get remove -y --purge curl && \
