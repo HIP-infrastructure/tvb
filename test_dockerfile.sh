@@ -1,9 +1,9 @@
 #!/bin/bash
 
-if [[ -z "$EBRAINS_TOKEN" ]]; then
-	echo "no EBRAINS_TOKEN env var found, will now request EBRAINS user/pass to get token:"
-	EBRAINS_TOKEN=$(python3 get_token.py)
-fi
+# if [[ -z "$EBRAINS_TOKEN" ]]; then
+# 	echo "no EBRAINS_TOKEN env var found, will now request EBRAINS user/pass to get token:"
+# 	EBRAINS_TOKEN=$(python3 get_token.py)
+# fi
 
 set -eux
 
@@ -16,7 +16,8 @@ docker build -t hip-deploy \
 	--build-arg CI_REGISTRY=bar \
 	--build-arg APP_NAME=tvb \
 	--build-arg APP_VERSION=0.6 \
-	--build-arg EBRAINS_TOKEN=$EBRAINS_TOKEN \
 	.
 
+	# --build-arg EBRAINS_TOKEN=$EBRAINS_TOKEN \
+	
 docker build -t hip-test -f test.dockerfile .

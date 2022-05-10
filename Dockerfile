@@ -17,16 +17,23 @@ WORKDIR /apps/${APP_NAME}
 RUN mkdir -p /apps/tvb-hip && ln -s /apps/${APP_NAME} /apps/tvb-hip
 
 # token required to pull from data proxy, but doesn't persist in image
-ARG EBRAINS_TOKEN
+# ARG EBRAINS_TOKEN
 
 RUN apt-get update && \
-    apt-get install -y curl
+    apt-get install -y curl python3-pip && \
+    pip3 install PyGithub
+
+ADD get_tarball.py ./
+RUN python3 get_tarball.py \
+ && cat tvb-hip-app.tar.gz2.a* | tar -C / -xzf - \
+ && rm tvb-hip-app.tar.gz2.a*
 
 RUN curl -k -L https://github.com/ins-amu/hip-tvb-app/archive/refs/tags/v$APP_VERSION.tar.gz | tar xz \
  && ./hip-tvb-app-$APP_VERSION/install-packages.sh
 
-RUN python3 hip-tvb-app-$APP_VERSION/sync_image.py \
- && tar -C / -xzf /apps/${APP_NAME}/tvb-hip-app.tar.* && rm /apps/${APP_NAME}/tvb-hip-app.tar.*
+# no longer required
+#RUN python3 hip-tvb-app-$APP_VERSION/sync_image.py \
+# && tar -C / -xzf /apps/${APP_NAME}/tvb-hip-app.tar.* && rm /apps/${APP_NAME}/tvb-hip-app.tar.*
 
 # we could clean up but image is already enormous
     # apt-get remove -y --purge curl && \
@@ -36,7 +43,7 @@ RUN python3 hip-tvb-app-$APP_VERSION/sync_image.py \
 
 # needed because we have a different context
 ADD ./apps/${APP_NAME}/better-start.sh /apps/tvb-hip/start2.sh
-#ADD better-start.sh /apps/tvb-hip/start2.sh
+# ADD better-start.sh /apps/tvb-hip/start2.sh
 
 # TODO install from source, avoid numpy abi incompat
 RUN PATH=/apps/tvb-hip/jlab_server/bin:$PATH pip uninstall -y tvb-gdist
