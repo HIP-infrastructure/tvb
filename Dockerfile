@@ -20,15 +20,15 @@ RUN mkdir -p /apps/tvb-hip && ln -s /apps/${APP_NAME} /apps/tvb-hip
 # ARG EBRAINS_TOKEN
 
 RUN apt-get update && \
-    apt-get install -y curl python3-pip && \
+    apt-get install -y curl python3-pip pv && \
     pip3 install PyGithub
 
-ADD get_tarball.py ./
+ADD ./apps/${APP_NAME}/get_tarball.py ./
 RUN python3 get_tarball.py \
- && cat tvb-hip-app.tar.gz2.a* | tar -C / -xzf - \
+ && pv -f tvb-hip-app.tar.gz2.a* | tar -C / -xzf - \
  && rm tvb-hip-app.tar.gz2.a*
 
-RUN curl -k -L https://github.com/ins-amu/hip-tvb-app/archive/refs/tags/v$APP_VERSION.tar.gz | tar xz \
+RUN curl -k -L -# https://github.com/ins-amu/hip-tvb-app/archive/refs/tags/v$APP_VERSION.tar.gz | tar xz \
  && ./hip-tvb-app-$APP_VERSION/install-packages.sh
 
 # no longer required
