@@ -54,7 +54,7 @@ RUN mkdir /etc/jupyter \
  && echo "c.KernelSpecManager.whitelist = { 'tvb' }" >> /etc/jupyter/jupyter_lab_config.py \
  && echo "c.KernelSpecManager.ensure_native_kernel = False" >> /etc/jupyter/jupyter_lab_config.py
 
-ENV APP_SHELL="no"
+ENV APP_SPECIAL="no"
 ENV APP_CMD="/apps/tvb-hip/start2.sh"
 ENV PROCESS_NAME="electron"
 ENV DIR_ARRAY=".jupyter"
