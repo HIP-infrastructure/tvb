@@ -54,10 +54,11 @@ RUN mkdir /etc/jupyter \
  && echo "c.KernelSpecManager.whitelist = { 'tvb' }" >> /etc/jupyter/jupyter_lab_config.py \
  && echo "c.KernelSpecManager.ensure_native_kernel = False" >> /etc/jupyter/jupyter_lab_config.py
 
-ENV APP_SPECIAL="no"
-ENV APP_CMD="/apps/tvb-hip/start2.sh"
-ENV PROCESS_NAME="electron"
-ENV DIR_ARRAY=".jupyter"
+ENV APP_SPECIAL="terminal"
+ENV APP_CMD=""
+ENV PROCESS_NAME=""
+ENV DIR_ARRAY=""
+ENV CONFIG_ARRAY=".bash_profile"
 
 HEALTHCHECK --interval=10s --timeout=10s --retries=5 --start-period=30s \
   CMD sh -c "/apps/${APP_NAME}/scripts/process-healthcheck.sh \
