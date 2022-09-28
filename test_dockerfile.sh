@@ -7,8 +7,9 @@
 
 set -eux
 
-docker pull ubuntu
-docker tag ubuntu deploy-hip/nc-webdav:latest
+ub=ubuntu:20.04
+docker pull $ub
+docker tag $ub deploy-hip/nc-webdav:latest
 docker build -t hip-deploy \
 	--build-arg CI_REGISTRY_IMAGE=deploy-hip \
 	--build-arg DAVFS2_VERSION=latest \
@@ -20,4 +21,17 @@ docker build -t hip-deploy \
 
 	# --build-arg EBRAINS_TOKEN=$EBRAINS_TOKEN \
 	
+# this just adds a hip user
 docker build -t hip-test -f test.dockerfile .
+
+# start a container for testing
+docker rm -f hip-test || true
+docker run -d --name hip-test \
+	--entrypoint '' \
+	-p 127.0.0.1:8888:8888 \
+	-v /home/duke/nextcloud:/home/hip/nextcloud \
+	-w /home/hip \
+	hip-test \
+	bash -c 'source /apps/tvb/conda/bin/activate && jupyter lab --ip=0.0.0.0'
+sleep 2
+docker logs hip-test
