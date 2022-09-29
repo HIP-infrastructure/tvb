@@ -17,24 +17,33 @@ WORKDIR /apps/${APP_NAME}
 # a lot of stuff depends on this path, so symlink it in place
 RUN mkdir -p /apps/tvb-hip && ln -s /apps/${APP_NAME} /apps/tvb-hip
 
-# token required to pull from data proxy, but doesn't persist in image
-# ARG EBRAINS_TOKEN
+RUN apt-get update \
+ && DEBIAN_FRONTEND=noninteractive apt-get install -y libnss3-dev libx11-xcb1 libxcb-dri3-0 libxcomposite1 \
+	libxcursor1 libxdamage1 libxfixes3 libxi6 libxtst6 libatk1.0-0 libatk-bridge2.0-0 \
+	libgdk-pixbuf2.0-0 libgtk-3-0 libgtk-3-0 libpangocairo-1.0-0 libpango-1.0-0 libcairo2 \
+	libdrm2 libgbm1 libasound2 libatspi2.0-0 curl git build-essential tcsh perl nodejs \
+	python2 wget datalad bc libglu1-mesa-dev unzip
 
-RUN apt-get update && \
-    apt-get install -y curl python3-pip pv && \
-    pip3 install PyGithub
+RUN wget -q https://surfer.nmr.mgh.harvard.edu/pub/dist/freesurfer/7.2.0/freesurfer-linux-ubuntu18_amd64-7.2.0.tar.gz \
+ && tar xzf freesurfer-linux-ubuntu18_amd64-7.2.0.tar.gz \
+ && rm freesurfer-linux-ubuntu18_amd64-7.2.0.tar.gz
 
-ADD ./apps/${APP_NAME}/get_tarball.py ./
-RUN python3 get_tarball.py \
- && pv -f tvb-hip-app.tar.gz2.a* | tar -C / -xzf - \
- && rm tvb-hip-app.tar.gz2.a*
+RUN wget https://fsl.fmrib.ox.ac.uk/fsldownloads/fslinstaller.py \
+ && echo "" | python2 fslinstaller.py
 
-RUN curl -k -L -# https://github.com/ins-amu/hip-tvb-app/archive/refs/tags/v$APP_VERSION.tar.gz | tar xz \
- && ./hip-tvb-app-$APP_VERSION/install-packages.sh
+RUN curl -LO https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh \
+ && bash Miniconda3-latest-Linux-x86_64.sh -b -p $PWD/conda \
+ && rm Miniconda3-latest-Linux-x86_64.sh \
+ && export PATH=$PWD/conda/bin:$PATH \
+ && conda install -y jupyter numba scipy matplotlib \
+ && conda install -y -c mrtrix3 mrtrix3 \
+ && pip install tvb-data tvb-library tqdm pybids siibra requests pyunicore mne nilearn pyvista ipywidgets cmdstanpy \
+ && install_cmdstan \
+ && mv /root/.cmdstan $PWD/cmdstan
 
-# no longer required
-#RUN python3 hip-tvb-app-$APP_VERSION/sync_image.py \
-# && tar -C / -xzf /apps/${APP_NAME}/tvb-hip-app.tar.* && rm /apps/${APP_NAME}/tvb-hip-app.tar.*
+ENV PATH=/apps/${APP_NAME}/conda/bin:$PATH
+ENV FREESURFER_HOME=/apps/${APP_NAME}/freesurfer
+ADD license.txt /apps/${APP_NAME}/freesurfer/license.txt
 
 # we could clean up but image is already enormous
     # apt-get remove -y --purge curl && \
@@ -46,19 +55,17 @@ RUN curl -k -L -# https://github.com/ins-amu/hip-tvb-app/archive/refs/tags/v$APP
 ADD ./apps/${APP_NAME}/better-start.sh /apps/tvb-hip/start2.sh
 # ADD better-start.sh /apps/tvb-hip/start2.sh
 
-# TODO install from source, avoid numpy abi incompat
-RUN PATH=/apps/tvb-hip/jlab_server/bin:$PATH pip uninstall -y tvb-gdist
-
 # ensure bash is used, and our our kernelspec with $HOME env vars set
-RUN mkdir /etc/jupyter \
- && echo "c.ServerApp.terminado_settings = { 'shell_command': ['/usr/bin/bash'] }" > /etc/jupyter/jupyter_lab_config.py \
- && echo "c.KernelSpecManager.whitelist = { 'tvb' }" >> /etc/jupyter/jupyter_lab_config.py \
- && echo "c.KernelSpecManager.ensure_native_kernel = False" >> /etc/jupyter/jupyter_lab_config.py
+#RUN mkdir /etc/jupyter \
+# && echo "c.ServerApp.terminado_settings = { 'shell_command': ['/usr/bin/bash'] }" > /etc/jupyter/jupyter_lab_config.py \
+# && echo "c.KernelSpecManager.whitelist = { 'tvb' }" >> /etc/jupyter/jupyter_lab_config.py \
+# && echo "c.KernelSpecManager.ensure_native_kernel = False" >> /etc/jupyter/jupyter_lab_config.py
 
-ENV APP_SPECIAL="no"
-ENV APP_CMD="/apps/tvb-hip/start2.sh"
-ENV PROCESS_NAME="electron"
-ENV DIR_ARRAY=".jupyter"
+ENV APP_SPECIAL="terminal"
+ENV APP_CMD=""
+ENV PROCESS_NAME=""
+ENV DIR_ARRAY=""
+ENV CONFIG_ARRAY=".bash_profile"
 
 HEALTHCHECK --interval=10s --timeout=10s --retries=5 --start-period=30s \
   CMD sh -c "/apps/${APP_NAME}/scripts/process-healthcheck.sh \
