@@ -43,7 +43,7 @@ RUN curl -LO https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.
 
 ENV PATH=/apps/${APP_NAME}/conda/bin:$PATH
 ENV FREESURFER_HOME=/apps/${APP_NAME}/freesurfer
-ADD license.txt /apps/${APP_NAME}/freesurfer/license.txt
+ADD ./apps/${APP_NAME}/license.txt /apps/${APP_NAME}/freesurfer/license.txt
 
 # we could clean up but image is already enormous
     # apt-get remove -y --purge curl && \
