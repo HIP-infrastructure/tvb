@@ -40,6 +40,10 @@ RUN curl -LO https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.
  && install_cmdstan \
  && mv /root/.cmdstan $PWD/cmdstan
 
+ENV PATH=/apps/${APP_NAME}/conda/bin:$PATH
+ENV FREESURFER_HOME=/apps/${APP_NAME}/freesurfer
+ADD license.txt /apps/${APP_NAME}/freesurfer/license.txt
+
 # we could clean up but image is already enormous
     # apt-get remove -y --purge curl && \
     # apt-get autoremove -y --purge && \

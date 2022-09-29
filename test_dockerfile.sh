@@ -30,8 +30,10 @@ docker run -d --name hip-test \
 	--entrypoint '' \
 	-p 127.0.0.1:8888:8888 \
 	-v /home/duke/nextcloud:/home/hip/nextcloud \
+	-v /home/duke/subjects:/home/hip/subjects \
+	-v /home/duke/tvb-pipeline:/home/hip/tvb-pipeline \
 	-w /home/hip \
 	hip-test \
 	bash -c 'source /apps/tvb/conda/bin/activate && jupyter lab --ip=0.0.0.0'
-sleep 2
+sleep 10
 docker logs hip-test
