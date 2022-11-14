@@ -51,6 +51,9 @@ ADD ./apps/${APP_NAME}/license.txt /apps/${APP_NAME}/freesurfer/license.txt
     # apt-get clean && \
     # rm -rf /var/lib/apt/lists/*
 
+# needed for jlab until app build works
+RUN apt-get install -y firefox
+
 # needed because we have a different context
 ADD ./apps/${APP_NAME}/better-start.sh /apps/tvb-hip/start2.sh
 # ADD better-start.sh /apps/tvb-hip/start2.sh

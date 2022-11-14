@@ -17,6 +17,8 @@ docker build -t hip-deploy \
 	--build-arg CI_REGISTRY=bar \
 	--build-arg APP_NAME=tvb \
 	--build-arg APP_VERSION=0.6 \
+	--build-arg DOCKERFS_TYPE=nc-webdav \
+	--build-arg DOCKERFS_VERSION=latest \
 	.
 
 	# --build-arg EBRAINS_TOKEN=$EBRAINS_TOKEN \
@@ -26,14 +28,17 @@ docker build -t hip-test -f test.dockerfile .
 
 # start a container for testing
 docker rm -f hip-test || true
-docker run -d --name hip-test \
+
+docker run --rm -it --name hip-test \
 	--entrypoint '' \
-	-p 127.0.0.1:8888:8888 \
+	-v /tmp/.X11-unix:/tmp/.X11-unix \
+	-e DISPLAY=$DISPLAY \
+	-h $HOSTNAME \
+	-v $XAUTHORITY:/home/hip/.Xauthority \
+	--network none \
 	-v /home/duke/nextcloud:/home/hip/nextcloud \
 	-v /home/duke/subjects:/home/hip/subjects \
 	-v /home/duke/tvb-pipeline:/home/hip/tvb-pipeline \
 	-w /home/hip \
 	hip-test \
-	bash -c 'source /apps/tvb/conda/bin/activate && jupyter lab --ip=0.0.0.0'
-sleep 10
-docker logs hip-test
+	bash -c 'source /apps/tvb/conda/bin/activate && jupyter lab'
