@@ -32,7 +32,7 @@ RUN wget -q https://surfer.nmr.mgh.harvard.edu/pub/dist/freesurfer/7.2.0/freesur
 
 RUN wget https://fsl.fmrib.ox.ac.uk/fsldownloads/fslinstaller.py \
  && if [ ! -z ${CI_REGISTRY} ]; then SILENT="-q"; fi \
- && echo "" | python2 fslinstaller.py ${SILENT}
+ && echo "" | python2 fslinstaller.py ${SILENT} -d /usr/local/fsl
 
 RUN curl -LO https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh \
  && bash Miniconda3-latest-Linux-x86_64.sh -b -p $PWD/conda \
