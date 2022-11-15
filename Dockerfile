@@ -31,7 +31,8 @@ RUN wget -q https://surfer.nmr.mgh.harvard.edu/pub/dist/freesurfer/7.2.0/freesur
  && rm freesurfer-linux-ubuntu18_amd64-7.2.0.tar.gz
 
 RUN wget https://fsl.fmrib.ox.ac.uk/fsldownloads/fslinstaller.py \
- && echo "" | python2 fslinstaller.py
+ && if [ ! -z ${CI_REGISTRY} ]; then SILENT="-q"; fi \
+ && echo "" | python2 fslinstaller.py ${SILENT}
 
 RUN curl -LO https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh \
  && bash Miniconda3-latest-Linux-x86_64.sh -b -p $PWD/conda \
