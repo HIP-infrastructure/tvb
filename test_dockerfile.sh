@@ -15,7 +15,7 @@ docker build -t hip-deploy \
 	--build-arg DAVFS2_VERSION=latest \
 	--build-arg CARD=foo \
 	--build-arg CI_REGISTRY=bar \
-	--build-arg TAG=baz \
+	--build-arg TAG='' \
 	--build-arg APP_NAME=tvb \
 	--build-arg APP_VERSION=0.6 \
 	--build-arg DOCKERFS_TYPE=nc-webdav \
@@ -32,14 +32,18 @@ docker rm -f hip-test || true
 
 docker run --rm -it --name hip-test \
 	--entrypoint '' \
+	--device=/dev/dri:/dev/dri \
 	-v /tmp/.X11-unix:/tmp/.X11-unix \
 	-e DISPLAY=$DISPLAY \
 	-h $HOSTNAME \
+	-v $XAUTHORITY:/root/.Xauthority \
 	-v $XAUTHORITY:/home/hip/.Xauthority \
-	--network none \
 	-v /home/duke/nextcloud:/home/hip/nextcloud \
 	-v /home/duke/subjects:/home/hip/subjects \
 	-v /home/duke/tvb-pipeline:/home/hip/tvb-pipeline \
 	-w /home/hip \
 	hip-test \
-	bash -c 'source /apps/tvb/conda/bin/activate && jupyter lab'
+	bash 
+
+	#bash -c 'source /apps/tvb/conda/bin/activate && jupyter lab'
+	#--network none \

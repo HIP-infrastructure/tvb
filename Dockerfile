@@ -39,23 +39,42 @@ RUN curl -LO https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.
  && rm Miniconda3-latest-Linux-x86_64.sh \
  && export PATH=$PWD/conda/bin:$PATH \
  && conda install -y jupyter numba scipy matplotlib \
- && conda install -y -c mrtrix3 mrtrix3 \
  && pip install tvb-data tvb-library tqdm pybids siibra requests pyunicore mne nilearn pyvista ipywidgets cmdstanpy \
  && install_cmdstan \
  && mv /root/.cmdstan $PWD/cmdstan
 
 ENV PATH=/apps/${APP_NAME}/conda/bin:$PATH
+# && conda install -y -c mrtrix3 mrtrix3 \
+
+ENV PATH=/apps/${APP_NAME}/conda/bin:$PATH
 ENV FREESURFER_HOME=/apps/${APP_NAME}/freesurfer
 ADD ./apps/${APP_NAME}/license.txt /apps/${APP_NAME}/freesurfer/license.txt
+
+# from the freesurfer dockerfile + mrtrix3
+RUN apt install -y libx11-dev gettext xterm x11-apps perl make csh tcsh file bc xorg \
+    xorg-dev xserver-xorg-video-intel libncurses5     libgomp1  libice6 libjpeg62 \
+    libsm6     libxft2 libxmu6 libxt6 mrtrix3
+
+# more reqs for jlab
+RUN apt-get install -y libnotify4 xdg-utils libsecret-1-0 libsecret-common
+
+RUN curl -LO https://github.com/jupyterlab/jupyterlab-desktop/releases/download/v3.5.0-1/JupyterLab-Setup-Debian.deb \
+ && dpkg -i JupyterLab-Setup-Debian.deb \
+ && bash $(find /opt/JupyterLab/ -name '*AppServer*sh') -b -p /apps/${APP_NAME}/jlabserver \
+ && rm JupyterLab-Setup-Debian.deb
+
+# run by hand once to select python environment 
+# /apps/tvb/jlabserver/bin/python
+# then grab config with
+# docker cp hip-test:/home/hip/.config/jupyterlab-desktop/jupyterlab-desktop-data ./
+# ADD jupyterlab-desktop-data /home/hip/.config/jupyterlab-desktop/jupyterlab-desktop-data
+# TODO use entrypoint script to handle this step
 
 # we could clean up but image is already enormous
     # apt-get remove -y --purge curl && \
     # apt-get autoremove -y --purge && \
     # apt-get clean && \
     # rm -rf /var/lib/apt/lists/*
-
-# needed for jlab until app build works
-RUN apt-get install -y firefox
 
 # needed because we have a different context
 ADD ./apps/${APP_NAME}/better-start.sh /apps/tvb-hip/start2.sh
