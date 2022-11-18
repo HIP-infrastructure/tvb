@@ -63,6 +63,8 @@ RUN curl -LO https://github.com/jupyterlab/jupyterlab-desktop/releases/download/
  && bash $(find /opt/JupyterLab/ -name '*AppServer*sh') -b -p /apps/${APP_NAME}/jlabserver \
  && rm JupyterLab-Setup-Debian.deb
 
+RUN pip install snakemake datalad
+
 # run by hand once to select python environment 
 # /apps/tvb/jlabserver/bin/python
 # then grab config with
