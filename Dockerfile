@@ -24,7 +24,7 @@ RUN apt-get update \
 	libxcursor1 libxdamage1 libxfixes3 libxi6 libxtst6 libatk1.0-0 libatk-bridge2.0-0 \
 	libgdk-pixbuf2.0-0 libgtk-3-0 libgtk-3-0 libpangocairo-1.0-0 libpango-1.0-0 libcairo2 \
 	libdrm2 libgbm1 libasound2 libatspi2.0-0 curl git build-essential tcsh perl nodejs \
-	python2 wget datalad bc libglu1-mesa-dev unzip
+	python2 wget datalad bc libglu1-mesa-dev unzip vim
 
 RUN wget -q https://surfer.nmr.mgh.harvard.edu/pub/dist/freesurfer/7.2.0/freesurfer-linux-ubuntu18_amd64-7.2.0.tar.gz \
  && tar xzf freesurfer-linux-ubuntu18_amd64-7.2.0.tar.gz \
