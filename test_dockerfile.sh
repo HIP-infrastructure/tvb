@@ -8,14 +8,14 @@
 set -eux
 
 # some versions & metadata
-base='ubuntu:20.04'
+base='ubuntu:22.04'
 ci_registry_image=deploy-hip
 davfs2_version=latest
 dockerfs_type=nc-webdav
 dockerfs_version=latest
 card=foo
 ci_registry=bar
-tag=''
+tag=22
 fs_ver=7.2.0
 fsl_ver=6.0.6
 tvb_ver=0.6
