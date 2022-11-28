@@ -39,7 +39,8 @@ RUN curl -LO https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.
  && rm Miniconda3-latest-Linux-x86_64.sh \
  && export PATH=$PWD/conda/bin:$PATH \
  && conda install -y jupyter numba scipy matplotlib \
- && pip install tvb-data tvb-library tqdm pybids siibra requests pyunicore mne nilearn pyvista ipywidgets cmdstanpy \
+ && pip install tvb-data tvb-library tqdm pybids siibra requests \
+    		pyunicore mne nilearn pyvista ipywidgets cmdstanpy pytest \
  && install_cmdstan \
  && mv /root/.cmdstan $PWD/cmdstan
 
