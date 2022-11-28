@@ -2,6 +2,14 @@ ARG CI_REGISTRY_IMAGE
 ARG TAG
 ARG DOCKERFS_TYPE
 ARG DOCKERFS_VERSION
+ARG FREESURFER_VERSION
+ARG FSL_VERSION
+
+# use prebuild freesurfer & fsl
+FROM ${CI_REGISTRY_IMAGE}/freesurfer:${FREESURFER_VERSION}${TAG} as freesurfer
+FROM ${CI_REGISTRY_IMAGE}/fsl:${FSL_VERSION}${TAG} as fsl
+
+# and building this
 FROM ${CI_REGISTRY_IMAGE}/${DOCKERFS_TYPE}:${DOCKERFS_VERSION}${TAG}
 LABEL maintainer="marmaduke.woodman@univ-amu.fr"
 
@@ -26,13 +34,15 @@ RUN apt-get update \
 	libdrm2 libgbm1 libasound2 libatspi2.0-0 curl git build-essential tcsh perl nodejs \
 	python2 wget datalad bc libglu1-mesa-dev unzip vim
 
-RUN wget -q https://surfer.nmr.mgh.harvard.edu/pub/dist/freesurfer/7.2.0/freesurfer-linux-ubuntu18_amd64-7.2.0.tar.gz \
- && tar xzf freesurfer-linux-ubuntu18_amd64-7.2.0.tar.gz \
- && rm freesurfer-linux-ubuntu18_amd64-7.2.0.tar.gz
+#RUN wget -q https://surfer.nmr.mgh.harvard.edu/pub/dist/freesurfer/7.2.0/freesurfer-linux-ubuntu18_amd64-7.2.0.tar.gz \
+# && tar xzf freesurfer-linux-ubuntu18_amd64-7.2.0.tar.gz \
+# && rm freesurfer-linux-ubuntu18_amd64-7.2.0.tar.gz
+COPY --from=freesurfer /usr/local/freesurfer /usr/local/freesurfer
 
-RUN wget https://fsl.fmrib.ox.ac.uk/fsldownloads/fslinstaller.py \
- && sed -i -E -e 's,(^\s*prog.update|^\s*progress)\(,\1\,\(,' fslinstaller.py \
- && echo "" | python2 fslinstaller.py -d /usr/local/fsl
+#RUN wget https://fsl.fmrib.ox.ac.uk/fsldownloads/fslinstaller.py \
+# && sed -i -E -e 's,(^\s*prog.update|^\s*progress)\(,\1\,\(,' fslinstaller.py \
+# && echo "" | python2 fslinstaller.py -d /usr/local/fsl
+COPY --from=fsl /usr/local/fsl /usr/local/fsl
 
 RUN curl -LO https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh \
  && bash Miniconda3-latest-Linux-x86_64.sh -b -p $PWD/conda \
