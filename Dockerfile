@@ -2,6 +2,8 @@ ARG CI_REGISTRY_IMAGE
 ARG TAG
 ARG DOCKERFS_TYPE
 ARG DOCKERFS_VERSION
+ARG FREESURFER_VERSION
+ARG FSL_VERSION
 
 # use prebuild freesurfer & fsl
 FROM ${CI_REGISTRY_IMAGE}/freesurfer:${FREESURFER_VERSION}${TAG} as freesurfer
@@ -35,7 +37,7 @@ RUN apt-get update \
 #RUN wget -q https://surfer.nmr.mgh.harvard.edu/pub/dist/freesurfer/7.2.0/freesurfer-linux-ubuntu18_amd64-7.2.0.tar.gz \
 # && tar xzf freesurfer-linux-ubuntu18_amd64-7.2.0.tar.gz \
 # && rm freesurfer-linux-ubuntu18_amd64-7.2.0.tar.gz
-COPY --from=freesurfer /apps/freesurfer /apps/freesurfer
+COPY --from=freesurfer /usr/local/freesurfer /usr/local/freesurfer
 
 #RUN wget https://fsl.fmrib.ox.ac.uk/fsldownloads/fslinstaller.py \
 # && sed -i -E -e 's,(^\s*prog.update|^\s*progress)\(,\1\,\(,' fslinstaller.py \

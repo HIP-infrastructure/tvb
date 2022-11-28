@@ -54,7 +54,7 @@ make_hip_image tvb $tvb_ver ./
 
 # test image & container
 docker build -t hip-test \
-	--build-arg ${ci_registry_image}/tvb:${tvb_ver}${tag} \
+	--build-arg fromimage=${ci_registry_image}/tvb:${tvb_ver}${tag} \
 	-f test.dockerfile .
 
 # start a container for testing
