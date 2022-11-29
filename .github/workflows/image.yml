@@ -11,9 +11,6 @@ jobs:
       - name: checkout
         uses: actions/checkout@v1
 
-      - name: docker
-        run: |
-          which docker
-          docker ps
-          docker images
+      - name: run build
+        run: bash test_dockerfile.sh
 
