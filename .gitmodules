@@ -1,6 +1,6 @@
 [submodule "stage-fs"]
 	path = stage-fs
-	url = git@github.com:HIP-infrastructure/freesurfer
+	url = https://github.com/HIP-infrastructure/freesurfer
 [submodule "stage-fsl"]
 	path = stage-fsl
-	url = git@github.com:HIP-infrastructure/fsl
+	url = https://github.com/HIP-infrastructure/fsl
