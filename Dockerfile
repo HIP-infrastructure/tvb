@@ -69,7 +69,7 @@ RUN apt install -y libx11-dev gettext xterm x11-apps perl make csh tcsh file bc 
 # more reqs for jlab
 RUN apt-get install -y libnotify4 xdg-utils libsecret-1-0 libsecret-common
 
-RUN curl -LO https://github.com/jupyterlab/jupyterlab-desktop/releases/download/v3.5.0-1/JupyterLab-Setup-Debian.deb \
+RUN curl -sSLO https://github.com/jupyterlab/jupyterlab-desktop/releases/download/v3.5.0-1/JupyterLab-Setup-Debian.deb \
  && dpkg -i JupyterLab-Setup-Debian.deb \
  && bash $(find /opt/JupyterLab/ -name '*AppServer*sh') -b -p /apps/${APP_NAME}/jlabserver \
  && rm JupyterLab-Setup-Debian.deb
