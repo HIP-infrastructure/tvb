@@ -26,3 +26,7 @@ The provided `Dockerfile` must be completed and modified for the new app that yo
 5. `<app_process_name>`: the exact name of the app process (if several use the parent process). You can find out by installing the app on Ubuntu 20.04 and running the command `ps faux`. This information is important for the health check as well as synchronizing files to Nextcloud after the `app` exited.
 
 6. `<app_files .app_files>`: list of directories necessary for the app to function and retain its state (database, preferences, etc.). These directories will be synced to Nextcloud and mounted into the container. The specified paths must be relative to the user home directory. For now files aren't supported, but support can be added if needed.
+
+## Acknowledgement
+
+This research was supported by the EBRAINS research infrastructure, funded from the European Union’s Horizon 2020 Framework Programme for Research and Innovation under the Specific Grant Agreement No. 945539 (Human Brain Project SGA3).
