@@ -1,0 +1,8 @@
+{
+  "checkForUpdatesAutomatically": false,
+  "installUpdatesAutomatically": false,
+  "pythonPath": "/usr/bin/python",
+  "serverArgs": "--allow-root",
+  "serverEnvVars": {},
+  "startupMode": "restore-sessions"
+}

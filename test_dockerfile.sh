@@ -8,7 +8,7 @@
 set -eux
 
 # some versions & metadata
-base='ubuntu:20.04'
+base='ubuntu:22.04'
 ci_registry_image=deploy-hip
 davfs2_version=latest
 dockerfs_type=nc-webdav
