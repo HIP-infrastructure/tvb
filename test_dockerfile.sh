@@ -16,7 +16,7 @@ dockerfs_version=latest
 card=foo
 ci_registry=bar
 tag=''
-fs_ver=7.2.0
+fs_ver=7.4.1
 fsl_ver=6.0.6
 tvb_ver=0.6
 
@@ -60,20 +60,22 @@ docker build -t hip-test \
 # start a container for testing
 docker rm -f hip-test || true
 
-docker run --rm -it --name hip-test \
-	--entrypoint '' \
+# x11 isn't available via rdp (on wsl) so make gui args conditional
+set +u
+guiargs="
 	--device=/dev/dri:/dev/dri \
 	-v /tmp/.X11-unix:/tmp/.X11-unix \
 	-e DISPLAY=$DISPLAY \
-	-h $HOSTNAME \
 	-v $XAUTHORITY:/root/.Xauthority \
 	-v $XAUTHORITY:/home/hip/.Xauthority \
-	-v /home/duke/nextcloud:/home/hip/nextcloud \
-	-v /home/duke/subjects:/home/hip/subjects \
-	-v /home/duke/tvb-pipeline:/home/hip/tvb-pipeline \
-	-w /home/hip \
-	hip-test \
-	bash 
+"
+if [[ -z "$XAUTHORITY" ]]; then guiargs=""; fi
+echo guiargs=$guiargs
 
-	#bash -c 'source /apps/tvb/conda/bin/activate && jupyter lab'
-	#--network none \
+docker run --rm -it --name hip-test \
+	--entrypoint '' \
+	-h tvb \
+	$guiargs \
+	-w /home/woodman \
+	hip-test \
+	bash

@@ -10,17 +10,19 @@ RUN apt-get update && apt-get install -y \
 
 # setup python env
 RUN pip install jupyterlab matplotlib mne nibabel ipywidgets scipy \
-    tvb-library tvb-data numba \
+    tvb-library tvb-data numba pybids siibra requests pyunicore nilearn \
+    pyvista pytest \
  && pip install --upgrade "jax[cuda11_pip]" -f \
  	https://storage.googleapis.com/jax-releases/jax_cuda_releases.html \
  && pip install vbjax
-
 # install jupyterlab desktop app
 RUN curl -sSLO https://github.com/jupyterlab/jupyterlab-desktop/releases/download/v4.0.5-1/JupyterLab-Setup-Debian.deb \
  && dpkg -i JupyterLab-Setup-Debian.deb
-
 # get copy of tvb recon pipeline
 RUN cd /opt && git clone https://github.com/ins-amu/tvb-pipeline
+
+# TODO aktually this don't werk cuz hip runs as $user@$app_name
+# TODO prolly safe to check for running-on-hip w/ the mount type ghostFS
 
 # setup configs for jupyter (convert to script?)
 RUN adduser hip

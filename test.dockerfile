@@ -1,4 +1,4 @@
 ARG fromimage
 FROM ${fromimage}
-RUN adduser hip
-USER hip
+RUN adduser woodman
+USER woodman
