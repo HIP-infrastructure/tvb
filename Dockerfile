@@ -50,12 +50,12 @@ RUN curl -sSLO https://github.com/jupyterlab/jupyterlab-desktop/releases/downloa
 # get copy of tvb recon pipeline
 RUN cd /opt && git clone https://github.com/ins-amu/tvb-pipeline
 
-ENV FREESURFER_HOME=/usr/local/freesurfer
-ADD ./apps/${APP_NAME}/license.txt /usr/local/freesurfer/license.txt
+ARG FREESURFER_VERSION
+ENV FREESURFER_HOME=/usr/local/freesurfer/${FREESURFER_VERSION}
+ADD ./apps/${APP_NAME}/license.txt $FREESURFER_HOME/license.txt
 
-# needed because we have a different context
-# ADD ./apps/${APP_NAME}/better-start.sh /apps/tvb-hip/start2.sh
-# ADD better-start.sh /apps/tvb-hip/start2.sh
+ADD jlab-entry.sh /usr/local/bin/jlab-entry.sh
+ADD welcome.ipynb /opt/welcome.ipynb
 
 ENV APP_SPECIAL="terminal"
 ENV APP_CMD=""

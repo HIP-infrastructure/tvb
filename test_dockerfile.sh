@@ -76,6 +76,10 @@ docker run --rm -it --name hip-test \
 	--entrypoint '' \
 	-h tvb \
 	$guiargs \
+	-p 127.0.0.1:8888:8888 \
 	-w /home/woodman \
+	-v /mnt/d/hip-prod:/home/woodman/nextcloud \
 	hip-test \
 	bash
+
+# jlab-entry startweb
