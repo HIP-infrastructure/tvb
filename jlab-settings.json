@@ -2,7 +2,9 @@
   "checkForUpdatesAutomatically": false,
   "installUpdatesAutomatically": false,
   "pythonPath": "/usr/bin/python",
-  "serverArgs": "--allow-root",
-  "serverEnvVars": {},
+  "serverArgs": "",
+  "serverEnvVars": {
+    "SHELL": "/bin/bash"
+  },
   "startupMode": "restore-sessions"
 }
