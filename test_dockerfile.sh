@@ -66,10 +66,12 @@ guiargs="
 	--device=/dev/dri:/dev/dri \
 	-v /tmp/.X11-unix:/tmp/.X11-unix \
 	-e DISPLAY=$DISPLAY \
-	-v $XAUTHORITY:/root/.Xauthority \
-	-v $XAUTHORITY:/home/hip/.Xauthority \
+	--shm-size=1g \
+	--gpus all \
 "
-if [[ -z "$XAUTHORITY" ]]; then guiargs=""; fi
+#	-v $XAUTHORITY:/root/.Xauthority \
+#	-v $XAUTHORITY:/home/hip/.Xauthority \
+if [[ -z "$DISPLAY" ]]; then guiargs=""; fi
 echo guiargs=$guiargs
 
 docker run --rm -it --name hip-test \
