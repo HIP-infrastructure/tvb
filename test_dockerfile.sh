@@ -82,6 +82,6 @@ docker run --rm -it --name hip-test \
 	-w /home/woodman \
 	-v /mnt/d/hip-prod:/home/woodman/nextcloud \
 	hip-test \
-	bash
+	jlab-entry.sh startapp
 
 # jlab-entry startweb
