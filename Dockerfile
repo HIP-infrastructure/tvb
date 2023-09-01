@@ -54,8 +54,8 @@ ARG FREESURFER_VERSION
 ENV FREESURFER_HOME=/usr/local/freesurfer/${FREESURFER_VERSION}
 ADD ./apps/${APP_NAME}/license.txt $FREESURFER_HOME/license.txt
 
-ADD jlab-entry.sh /usr/local/bin/jlab-entry.sh
-ADD welcome.ipynb /opt/welcome.ipynb
+ADD ./apps/${APP_NAME}/jlab-entry.sh /usr/local/bin/jlab-entry.sh
+ADD ./apps/${APP_NAME}/welcome.ipynb /opt/welcome.ipynb
 
 ENV APP_SPECIAL="terminal"
 ENV APP_CMD=""
