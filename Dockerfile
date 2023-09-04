@@ -22,6 +22,8 @@ ARG APP_VERSION
 LABEL app_version=$APP_VERSION
 LABEL app_tag=$TAG
 
+WORKDIR /apps/${APP_NAME}
+
 # install deb pacakges, w/ newer nodejs for building jlab ext
 RUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y ca-certificates curl gnupg \
  && mkdir -p /etc/apt/keyrings \
