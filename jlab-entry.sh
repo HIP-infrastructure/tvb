@@ -57,7 +57,7 @@ cat > .config/jupyterlab-desktop/settings.json <<EOF
     "FSLMULTIFILEQUIT": "TRUE",
     "FSL_LOAD_NIFTI_EXTENSIONS": "0",
     "FSLGECUDAQ": "cuda.q",
-    "PATH": "$FREESURFER_HOME/bin:$FREESURFER_HOME/fsfast/bin:$FREESURFER_HOME/tktools:/usr/local/fsl/bin:/usr/local/fsl/share/fsl/bin:$FREESURFER_HOME/mni/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin",
+    "PATH": "/usr/bin:$FREESURFER_HOME/bin:$FREESURFER_HOME/fsfast/bin:$FREESURFER_HOME/tktools:/usr/local/fsl/bin:/usr/local/fsl/share/fsl/bin:$FREESURFER_HOME/mni/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin",
     "FSL_SKIP_GLOBAL": "0",
     "FSF_OUTPUT_FORMAT": "nii.gz",
     "FSL_BIN": "/usr/local/fsl/bin",
