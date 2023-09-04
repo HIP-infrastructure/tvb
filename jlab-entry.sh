@@ -99,4 +99,5 @@ function toolinfo() {
 }
 
 toolinfo
-$1
+# $1
+startapp

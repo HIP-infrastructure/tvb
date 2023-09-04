@@ -50,17 +50,18 @@ RUN pip install jupyterlab matplotlib mne nibabel ipywidgets scipy \
     pyvista pytest \
  && pip install --upgrade "jax[cuda11_pip]" -f \
  	https://storage.googleapis.com/jax-releases/jax_cuda_releases.html \
- && pip install vbjax
+ && pip install torch torchvision torchaudio \
+	--index-url https://download.pytorch.org/whl/cpu \
+ && pip install vbjax sbi \
+
 # install jupyterlab desktop app
 RUN curl -sSLO https://github.com/jupyterlab/jupyterlab-desktop/releases/download/v4.0.5-1/JupyterLab-Setup-Debian.deb \
- && dpkg -i JupyterLab-Setup-Debian.deb
-# get copy of tvb recon pipeline
-RUN cd /opt && git clone https://github.com/ins-amu/tvb-pipeline
-# enable tvb-version
-RUN pip3 install torch torchvision torchaudio \
-	--index-url https://download.pytorch.org/whl/cpu \
- && pip3 install sbi \
- && cd /opt && git clone https://github.com/the-virtual-brain/tvb-inversion \
+ && dpkg -i JupyterLab-Setup-Debian.deb \
+ && rm JupyterLab-Setup-Debian.deb
+
+# tvb app
+RUN git clone https://github.com/ins-amu/tvb-pipeline \
+ && git clone https://github.com/the-virtual-brain/tvb-inversion \
  && cd tvb-inversion && pip3 install -e .
 
 # missing cl driver ftm
