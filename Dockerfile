@@ -78,7 +78,7 @@ ENV APP_SPECIAL="no"
 ENV APP_CMD="/usr/local/bin/jlab-entry.sh"
 ENV PROCESS_NAME="/opt/JupyterLab/jupyterlab-desktop"
 ENV DIR_ARRAY=".config/jupyterlab-desktop"
-ENV CONFIG_ARRAY=".bash_profile"
+ENV CONFIG_ARRAY=""
 
 HEALTHCHECK --interval=10s --timeout=10s --retries=5 --start-period=30s \
   CMD sh -c "/apps/${APP_NAME}/scripts/process-healthcheck.sh \
