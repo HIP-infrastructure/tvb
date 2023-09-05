@@ -52,7 +52,7 @@ RUN pip install jupyterlab matplotlib mne nibabel ipywidgets scipy \
  	https://storage.googleapis.com/jax-releases/jax_cuda_releases.html \
  && pip install torch torchvision torchaudio \
 	--index-url https://download.pytorch.org/whl/cpu \
- && pip install vbjax sbi \
+ && pip install vbjax sbi
 
 # install jupyterlab desktop app
 RUN curl -sSLO https://github.com/jupyterlab/jupyterlab-desktop/releases/download/v4.0.5-1/JupyterLab-Setup-Debian.deb \

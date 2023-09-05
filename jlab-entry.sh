@@ -7,6 +7,12 @@
 # it's useful for code to know whether we're live on hip or in dev
 if mount | grep GhostFS; then TVB_ON_HIP=yes; else TVB_ON_HIP=no; fi
 
+# maybe the Dockerfile's ENV FREESURFER_HOME didn't work
+if [[ -z "$FREESURFER_HOME" ]]
+then
+	# let's find FreeSurfer ourselves
+	export FREESURFER_HOME="$(dirname $(dirname $(ls /usr/local/freesurfer/*/bin/recon-all)))"
+fi
 
 cd $HOME
 
@@ -95,9 +101,9 @@ function toolinfo() {
 	which mrconvert
 	which flirt
 	which recon-all
+	echo FREESURFER_HOME=$FREESURFER_HOME
 	echo SUBJECTS_DIR=$SUBJECTS_DIR
 }
 
-toolinfo
-# $1
+toolinfo | tee .tvb-app-toolinfo.txt
 startapp
