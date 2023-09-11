@@ -24,86 +24,61 @@ LABEL app_tag=$TAG
 
 WORKDIR /apps/${APP_NAME}
 
-# a lot of stuff depends on this path, so symlink it in place
-RUN mkdir -p /apps/tvb-hip && ln -s /apps/${APP_NAME} /apps/tvb-hip
+# install deb pacakges, w/ newer nodejs for building jlab ext
+RUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y ca-certificates curl gnupg \
+ && mkdir -p /etc/apt/keyrings \
+ && curl -fsSL https://deb.nodesource.com/gpgkey/nodesource-repo.gpg.key | gpg --dearmor -o /etc/apt/keyrings/nodesource.gpg \
+ && echo "deb [signed-by=/etc/apt/keyrings/nodesource.gpg] https://deb.nodesource.com/node_18.x nodistro main" | tee /etc/apt/sources.list.d/nodesource.list \
+ && apt-get update \
+ && DEBIAN_FRONTEND=noninteractive apt-get install -y \
+libnss3-dev libx11-xcb1 libxcb-dri3-0 libxcomposite1 libxcursor1 libxdamage1 \
+libxfixes3 libxi6 libxtst6 libatk1.0-0 libatk-bridge2.0-0 libgdk-pixbuf2.0-0 \
+libgtk-3-0 libgtk-3-0 libpangocairo-1.0-0 libpango-1.0-0 libcairo2 libdrm2 \
+libgbm1 libasound2 libatspi2.0-0 libgtk-3-0 libnotify4 libnss3 libxss1 \
+libglu1-mesa-dev xorg-dev xserver-xorg-video-intel libncurses5 libgomp1 libice6 \
+libjpeg62 libx11-dev gettext xterm x11-apps csh file bc xorg libsm6 libxft2 \
+libxmu6 libxt6 mrtrix3 xdg-utils git build-essential tcsh perl \
+libsecret-1-0 libasound2 libsecret-common libgbm1 python-is-python3 python3-pip \
+jq make build-essential git neovim wget datalad bc unzip nodejs
 
-RUN apt-get update \
- && DEBIAN_FRONTEND=noninteractive apt-get install -y libnss3-dev libx11-xcb1 libxcb-dri3-0 libxcomposite1 \
-	libxcursor1 libxdamage1 libxfixes3 libxi6 libxtst6 libatk1.0-0 libatk-bridge2.0-0 \
-	libgdk-pixbuf2.0-0 libgtk-3-0 libgtk-3-0 libpangocairo-1.0-0 libpango-1.0-0 libcairo2 \
-	libdrm2 libgbm1 libasound2 libatspi2.0-0 curl git build-essential tcsh perl nodejs \
-	python2 wget datalad bc libglu1-mesa-dev unzip vim
-
-#RUN wget -q https://surfer.nmr.mgh.harvard.edu/pub/dist/freesurfer/7.2.0/freesurfer-linux-ubuntu18_amd64-7.2.0.tar.gz \
-# && tar xzf freesurfer-linux-ubuntu18_amd64-7.2.0.tar.gz \
-# && rm freesurfer-linux-ubuntu18_amd64-7.2.0.tar.gz
 COPY --from=freesurfer /usr/local/freesurfer /usr/local/freesurfer
-
-#RUN wget https://fsl.fmrib.ox.ac.uk/fsldownloads/fslinstaller.py \
-# && sed -i -E -e 's,(^\s*prog.update|^\s*progress)\(,\1\,\(,' fslinstaller.py \
-# && echo "" | python2 fslinstaller.py -d /usr/local/fsl
 COPY --from=fsl /usr/local/fsl /usr/local/fsl
 
-RUN curl -LO https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh \
- && bash Miniconda3-latest-Linux-x86_64.sh -b -p $PWD/conda \
- && rm Miniconda3-latest-Linux-x86_64.sh \
- && export PATH=$PWD/conda/bin:$PATH \
- && conda install -y jupyter numba scipy matplotlib \
- && pip install tvb-data tvb-library tqdm pybids siibra requests \
-    		pyunicore mne nilearn pyvista ipywidgets cmdstanpy pytest \
- && install_cmdstan \
- && mv /root/.cmdstan $PWD/cmdstan
+# setup python env (TODO consider using fsl's python)
+RUN pip install jupyterlab matplotlib mne nibabel ipywidgets scipy \
+    tvb-library tvb-data numba pybids siibra requests pyunicore nilearn \
+    pyvista pytest \
+ && pip install --upgrade "jax[cuda11_pip]" -f \
+ 	https://storage.googleapis.com/jax-releases/jax_cuda_releases.html \
+ && pip install torch torchvision torchaudio \
+	--index-url https://download.pytorch.org/whl/cpu \
+ && pip install vbjax sbi
 
-ENV PATH=/apps/${APP_NAME}/conda/bin:$PATH
-# && conda install -y -c mrtrix3 mrtrix3 \
-
-ENV PATH=/apps/${APP_NAME}/conda/bin:$PATH
-ENV FREESURFER_HOME=/apps/${APP_NAME}/freesurfer
-ADD ./apps/${APP_NAME}/license.txt /apps/${APP_NAME}/freesurfer/license.txt
-
-# from the freesurfer dockerfile + mrtrix3
-RUN apt install -y libx11-dev gettext xterm x11-apps perl make csh tcsh file bc xorg \
-    xorg-dev xserver-xorg-video-intel libncurses5     libgomp1  libice6 libjpeg62 \
-    libsm6     libxft2 libxmu6 libxt6 mrtrix3
-
-# more reqs for jlab
-RUN apt-get install -y libnotify4 xdg-utils libsecret-1-0 libsecret-common
-
-RUN curl -sSLO https://github.com/jupyterlab/jupyterlab-desktop/releases/download/v3.5.0-1/JupyterLab-Setup-Debian.deb \
+# install jupyterlab desktop app
+RUN curl -sSLO https://github.com/jupyterlab/jupyterlab-desktop/releases/download/v4.0.5-1/JupyterLab-Setup-Debian.deb \
  && dpkg -i JupyterLab-Setup-Debian.deb \
- && bash $(find /opt/JupyterLab/ -name '*AppServer*sh') -b -p /apps/${APP_NAME}/jlabserver \
  && rm JupyterLab-Setup-Debian.deb
 
-RUN pip install snakemake datalad
+# tvb app
+RUN git clone https://github.com/ins-amu/tvb-pipeline \
+ && git clone https://github.com/the-virtual-brain/tvb-inversion \
+ && cd tvb-inversion && pip3 install -e .
 
-# run by hand once to select python environment 
-# /apps/tvb/jlabserver/bin/python
-# then grab config with
-# docker cp hip-test:/home/hip/.config/jupyterlab-desktop/jupyterlab-desktop-data ./
-# ADD jupyterlab-desktop-data /home/hip/.config/jupyterlab-desktop/jupyterlab-desktop-data
-# TODO use entrypoint script to handle this step
+# missing cl driver ftm
+# RUN pip3 install pyopencl
 
-# we could clean up but image is already enormous
-    # apt-get remove -y --purge curl && \
-    # apt-get autoremove -y --purge && \
-    # apt-get clean && \
-    # rm -rf /var/lib/apt/lists/*
+ARG FREESURFER_VERSION
+ENV FREESURFER_HOME=/usr/local/freesurfer/${FREESURFER_VERSION}
+ADD ./apps/${APP_NAME}/license.txt $FREESURFER_HOME/license.txt
 
-# needed because we have a different context
-ADD ./apps/${APP_NAME}/better-start.sh /apps/tvb-hip/start2.sh
-# ADD better-start.sh /apps/tvb-hip/start2.sh
+ADD ./apps/${APP_NAME}/jlab-entry.sh /usr/local/bin/jlab-entry.sh
+ADD ./apps/${APP_NAME}/welcome.ipynb /opt/welcome.ipynb
 
-# ensure bash is used, and our our kernelspec with $HOME env vars set
-#RUN mkdir /etc/jupyter \
-# && echo "c.ServerApp.terminado_settings = { 'shell_command': ['/usr/bin/bash'] }" > /etc/jupyter/jupyter_lab_config.py \
-# && echo "c.KernelSpecManager.whitelist = { 'tvb' }" >> /etc/jupyter/jupyter_lab_config.py \
-# && echo "c.KernelSpecManager.ensure_native_kernel = False" >> /etc/jupyter/jupyter_lab_config.py
-
-ENV APP_SPECIAL="terminal"
-ENV APP_CMD=""
-ENV PROCESS_NAME=""
-ENV DIR_ARRAY=""
-ENV CONFIG_ARRAY=".bash_profile"
+ENV APP_SPECIAL="no"
+ENV APP_CMD="/usr/local/bin/jlab-entry.sh"
+ENV PROCESS_NAME="/opt/JupyterLab/jupyterlab-desktop"
+ENV DIR_ARRAY=".config/jupyterlab-desktop"
+ENV CONFIG_ARRAY=""
 
 HEALTHCHECK --interval=10s --timeout=10s --retries=5 --start-period=30s \
   CMD sh -c "/apps/${APP_NAME}/scripts/process-healthcheck.sh \

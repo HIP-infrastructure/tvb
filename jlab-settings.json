@@ -1,0 +1,10 @@
+{
+  "checkForUpdatesAutomatically": false,
+  "installUpdatesAutomatically": false,
+  "pythonPath": "/usr/bin/python",
+  "serverArgs": "",
+  "serverEnvVars": {
+    "SHELL": "/bin/bash"
+  },
+  "startupMode": "restore-sessions"
+}
