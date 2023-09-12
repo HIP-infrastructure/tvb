@@ -73,6 +73,7 @@ ADD ./apps/${APP_NAME}/license.txt $FREESURFER_HOME/license.txt
 
 ADD ./apps/${APP_NAME}/jlab-entry.sh /usr/local/bin/jlab-entry.sh
 ADD ./apps/${APP_NAME}/welcome.ipynb /opt/welcome.ipynb
+ADD ./apps/${APP_NAME}/simulation.ipynb /opt/simulation.ipynb
 
 ENV APP_SPECIAL="no"
 ENV APP_CMD="/usr/local/bin/jlab-entry.sh"
