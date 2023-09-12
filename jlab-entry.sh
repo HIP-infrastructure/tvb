@@ -84,6 +84,7 @@ EOF
 
 # copy the welcome notebook into place
 cp /opt/welcome.ipynb ./welcome.ipynb
+cp /opt/simulation.ipynb ./simulation.ipynb
 
 # allow entrypoint to choose one of the commands
 function startweb() {
